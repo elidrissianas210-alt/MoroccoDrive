@@ -1,0 +1,14 @@
+services:
+  app:
+    container_name: moroccodrive-app
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "3000:3000"
+    env_file:
+      - path: .env.local
+        required: false
+    environment:
+      NODE_ENV: production
+    restart: unless-stopped
