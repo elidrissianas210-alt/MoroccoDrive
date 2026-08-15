@@ -9,8 +9,9 @@ MoroccoDrive is a modern SaaS marketplace connecting car rental agencies and cus
 - Tailwind CSS
 - Docker
 - GitHub Actions
+- Supabase SSR clients for browser, server, and admin access
 
-The documented architecture plans integrations with Supabase, Drizzle ORM, and Stripe; those integrations are not implemented in the current application foundation.
+The current application foundation includes the Supabase SSR configuration. Drizzle ORM and Stripe remain planned integrations.
 
 ## Documentation
 
