@@ -13,6 +13,7 @@ vi.mock("node:child_process", () => ({ spawn: vi.fn() }));
 type FakeChild = EventEmitter & {
   stdout: EventEmitter;
   stderr: EventEmitter;
+  stdin: { end: ReturnType<typeof vi.fn> };
   kill: ReturnType<typeof vi.fn>;
 };
 
@@ -20,6 +21,7 @@ const makeChild = (): FakeChild => {
   const child = new EventEmitter() as FakeChild;
   child.stdout = new EventEmitter();
   child.stderr = new EventEmitter();
+  child.stdin = { end: vi.fn() };
   child.kill = vi.fn();
   return child;
 };
@@ -56,8 +58,7 @@ describe("Codex CLI adapter", () => {
       "--json",
       "--sandbox",
       "workspace-write",
-      "--ask-for-approval",
-      "on-request",
+      "--approve-for-me",
       "-C",
       request.workingDirectory,
       prompt,
@@ -75,7 +76,21 @@ describe("Codex CLI adapter", () => {
     const command = buildCodexCommand(request);
     expect(command.args.at(-1)).toContain("$(echo unsafe)");
     expect(command.args.at(-1)).toContain("&& rm -rf .");
-    expect(command.args).toHaveLength(9);
+    expect(command.args).toHaveLength(8);
+    expect(command.args).not.toContain("--ask-for-approval");
+  });
+
+  it.each([
+    ["untrusted", 'approval_policy="untrusted"'],
+    ["on-failure", 'approval_policy="on-request"'],
+    ["never", 'approval_policy="never"'],
+  ] as const)("maps %s approval policy through supported Codex config", (approvalPolicy, config) => {
+    const command = buildCodexCommand({ ...request, approvalPolicy });
+
+    expect(command.args).toContain("-c");
+    expect(command.args).toContain(config);
+    expect(command.args).not.toContain("--approve-for-me");
+    expect(command.args).not.toContain("--ask-for-approval");
   });
 
   it("maps successful runner output and captures stdout/stderr", async () => {
@@ -126,6 +141,7 @@ describe("Codex CLI adapter", () => {
     vi.mocked(spawn).mockImplementation(((...args: unknown[]) => {
       const options = args[2] as { shell?: boolean };
       expect(options.shell).toBe(false);
+      expect(child.stdin.end).not.toHaveBeenCalled();
       queueMicrotask(() => {
         child.stdout.emit("data", Buffer.from("json handoff\n"));
         child.stderr.emit("data", Buffer.from("warning\n"));
@@ -141,6 +157,7 @@ describe("Codex CLI adapter", () => {
       handoffText: "json handoff",
     });
     expect(spawn).toHaveBeenCalledTimes(1);
+    expect(child.stdin.end).toHaveBeenCalledTimes(1);
   });
 
   it("kills the child on timeout and reports the timeout", async () => {

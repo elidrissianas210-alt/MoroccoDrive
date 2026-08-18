@@ -13,6 +13,15 @@ Execution policy is explicit in every command:
 - `on-request` approval by default;
 - bounded timeout;
 - `shell: false` and the supplied working directory.
+The current Codex CLI (verified with `codex-cli 0.147.0`) no longer accepts the
+legacy `--ask-for-approval <policy>` option. The adapter maps `on-request` to
+the supported `--approve-for-me` automatic-review preset. The other supported
+policy values are passed through `-c approval_policy="<policy>"`; the legacy
+`on-failure` value is mapped to the current `on-request` policy because the
+installed CLI documents `on-failure` as deprecated. `never` therefore remains
+an explicit non-interactive policy, and no approval option is used that would
+weaken the requested sandbox boundary. The adapter never uses
+`--dangerously-bypass-approvals-and-sandbox`.
 
 Callers may select stricter or broader policies only through the validated request and must apply the human approval gates in [workflow](workflow.md). `danger-full-access` and `never` approval are intentionally available as explicit choices but are not defaults.
 

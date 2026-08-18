@@ -57,6 +57,17 @@ type CommandOutcome = {
 };
 
 export type CodexCommandRunner = (command: CodexCommand) => Promise<CommandOutcome>;
+const buildApprovalArgs = (request: CodexExecutionRequest): string[] => {
+  if (request.approvalPolicy === "on-request") {
+    return ["--approve-for-me"];
+  }
+
+  const approvalPolicy = request.approvalPolicy === "on-failure"
+    ? "on-request"
+    : request.approvalPolicy;
+
+  return ["-c", `approval_policy="${approvalPolicy}"`];
+};
 
 const formatList = (items: string[]): string => {
   return items.length === 0 ? "- none" : items.map((item) => `- ${item}`).join("\n");
@@ -114,8 +125,7 @@ export const buildCodexCommand = (requestInput: unknown): CodexCommand => {
       "--json",
       "--sandbox",
       request.sandbox,
-      "--ask-for-approval",
-      request.approvalPolicy,
+      ...buildApprovalArgs(request),
       "-C",
       request.workingDirectory,
       buildCodexPrompt(request),
@@ -139,6 +149,8 @@ const runCodexCommand: CodexCommandRunner = (command) => {
       reject(error);
       return;
     }
+
+    child.stdin?.end();
 
     let stdout = "";
     let stderr = "";
