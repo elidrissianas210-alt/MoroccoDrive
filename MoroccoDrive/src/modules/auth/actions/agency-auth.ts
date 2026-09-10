@@ -5,7 +5,7 @@ import { redirect } from "next/navigation";
 
 import { createClient } from "@/lib/supabase/server";
 import { getAgencyDb } from "@/modules/agencies/db";
-import { profiles } from "@/modules/agencies/schema";
+import { profiles } from "@/db/schema";
 import { credentialsSchema, emailSchema, passwordSchema, type Credentials } from "../validators";
 
 const failure = (message: string) => ({ success: false as const, message });

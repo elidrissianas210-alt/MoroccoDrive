@@ -1,7 +1,7 @@
 import { eq } from "drizzle-orm";
 import { createClient } from "@/lib/supabase/server";
 import { getAgencyDb } from "../db";
-import { agencies, profiles } from "../schema";
+import { agencies, profiles } from "@/db/schema";
 
 export async function requireAgencyOwner() {
   const supabase = await createClient();

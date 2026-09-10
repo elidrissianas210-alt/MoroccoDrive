@@ -2,7 +2,7 @@
 import { and, desc, eq } from "drizzle-orm";
 import { revalidatePath } from "next/cache";
 import { getAgencyDb } from "../db";
-import { cars } from "../schema";
+import { cars } from "@/db/schema";
 import { idSchema, vehicleInputSchema, type VehicleInput } from "../validators";
 import { requireAgencyOwner } from "../services/authorization";
 

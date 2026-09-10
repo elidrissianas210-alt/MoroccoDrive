@@ -2,7 +2,7 @@
 
 import { useState, type ChangeEvent } from "react";
 import { deleteVehicleImage, uploadVehicleImages } from "../actions/manage-images";
-import type { CarImage } from "../types";
+import type { CarImage } from "@/db/schema";
 
 interface VehicleImageManagerProps {
   vehicleId: string;

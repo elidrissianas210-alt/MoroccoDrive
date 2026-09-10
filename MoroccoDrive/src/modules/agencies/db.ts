@@ -1,13 +1,13 @@
 import "server-only";
 import { drizzle } from "drizzle-orm/postgres-js";
 import postgres from "postgres";
-import { agencies, carImages, cars, profiles } from "./schema";
+import { schema } from "@/db/schema";
 
 function createAgencyDb() {
   const databaseUrl = process.env.DATABASE_URL;
   if (!databaseUrl) throw new Error("Missing required environment variable: DATABASE_URL");
   const client = postgres(databaseUrl, { prepare: false });
-  return drizzle(client, { schema: { agencies, carImages, cars, profiles } });
+  return drizzle(client, { schema });
 }
 
 type AgencyDb = ReturnType<typeof createAgencyDb>;

@@ -4,7 +4,7 @@ import { and, asc, eq } from "drizzle-orm";
 import { revalidatePath } from "next/cache";
 import { createClient } from "@/lib/supabase/server";
 import { getAgencyDb } from "../db";
-import { carImages, cars } from "../schema";
+import { carImages, cars } from "@/db/schema";
 import { idSchema } from "../validators";
 import { requireAgencyOwner } from "../services/authorization";
 

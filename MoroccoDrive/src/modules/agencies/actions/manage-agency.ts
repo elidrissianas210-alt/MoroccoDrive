@@ -2,7 +2,7 @@
 import { eq } from "drizzle-orm";
 import { revalidatePath } from "next/cache";
 import { getAgencyDb } from "../db";
-import { agencies, profiles } from "../schema";
+import { agencies, profiles } from "@/db/schema";
 import { agencyInputSchema, agencyOnboardingSchema, type AgencyInput, type AgencyOnboardingInput } from "../validators";
 import { requireAgencyOwner } from "../services/authorization";
 import { createClient } from "@/lib/supabase/server";
