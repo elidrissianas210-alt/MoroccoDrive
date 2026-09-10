@@ -15,7 +15,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" suppressHydrationWarning>
-      <body>{children}</body>
+      <body style={{ textAlign: "left" }}>{children}</body>
     </html>
   );
 }

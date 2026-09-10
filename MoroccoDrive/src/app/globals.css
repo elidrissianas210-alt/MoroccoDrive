@@ -1,14 +1,5 @@
 @import "tailwindcss";
 
-:root {
-  color-scheme: light;
-  --background: #f7faf9;
-  --foreground: #0f172a;
-}
-
+:root { color-scheme: light; --background: #fbfbfa; --foreground: #111827; --font-jakarta: "Plus Jakarta Sans", sans-serif; --font-inter: "Inter", sans-serif; }
 html { background: var(--background); }
-body {
-  min-height: 100vh;
-  background: radial-gradient(circle at 80% -10%, rgba(20, 184, 166, 0.08), transparent 30%), var(--background);
-  color: var(--foreground);
-}
+body { min-height: 100vh; background: var(--background); color: var(--foreground); font-family: var(--font-inter); }
