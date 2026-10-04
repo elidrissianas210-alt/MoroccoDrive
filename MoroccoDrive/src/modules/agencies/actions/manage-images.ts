@@ -1,21 +1,20 @@
 "use server";
 
 import { revalidatePath } from "next/cache";
+import type { CarImage } from "@/db/schema";
 import { idSchema } from "../validators";
 import { requireAgencyOwner } from "../services/authorization";
-import { deleteFleetVehicleImage, listFleetVehicleImages, uploadFleetVehicleImages } from "../use-cases/vehicle-image-use-cases";
+import { deleteFleetVehicleImage, listFleetImages as listFleetImagesUseCase, uploadFleetVehicleImages } from "../use-cases/vehicle-image-use-cases";
 
 const MAX_FILE_SIZE = 5 * 1024 * 1024;
 const ALLOWED_TYPES = new Set(["image/jpeg", "image/png", "image/webp"]);
 
-export async function listVehicleImages(vehicleId: string) {
-  const parsed = idSchema.safeParse(vehicleId);
-  if (!parsed.success) return [];
+export async function listFleetImages(): Promise<Record<string, CarImage[]>> {
   try {
     const { agency } = await requireAgencyOwner();
-    return (await listFleetVehicleImages(agency.id, parsed.data)) ?? [];
+    return await listFleetImagesUseCase(agency.id);
   } catch {
-    return [];
+    return {};
   }
 }
 

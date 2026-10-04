@@ -2,8 +2,9 @@ import { and, asc, eq } from "drizzle-orm";
 import { carImages, cars } from "@/db/schema";
 import { getAgencyDb } from "../db";
 
-export async function listImagesByVehicleId(vehicleId: string) {
-  return getAgencyDb().select().from(carImages).where(eq(carImages.carId, vehicleId)).orderBy(asc(carImages.sortOrder), asc(carImages.createdAt));
+export async function listImagesByAgencyId(agencyId: string) {
+  const rows = await getAgencyDb().select({ image: carImages }).from(carImages).innerJoin(cars, eq(carImages.carId, cars.id)).where(eq(cars.agencyId, agencyId)).orderBy(asc(carImages.sortOrder), asc(carImages.createdAt));
+  return rows.map((row) => row.image);
 }
 
 export async function listSortOrdersByVehicleId(vehicleId: string) {
